@@ -1,15 +1,61 @@
-<% content_for :title, "Showing category" %>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Category Details
+        </h3>
+        <div>
+          <% if current_user.admin? %>
+            <%= link_to "Edit", edit_category_path(@category), class: "text-red-600 hover:text-red-800 mr-4" %>
+          <% end %>
+          <%= link_to "Back", categories_path, class: "text-gray-600 hover:text-gray-800" %>
+        </div>
+      </div>
+    </div>
+    <div class="px-4 py-5 sm:p-6">
+      <div class="grid grid-cols-1 gap-y-4">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Name</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @category.name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Number of Products</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @category.products.count %></dd>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Showing category</h1>
-
-  <%= render @category %>
-
-  <%= link_to "Edit this category", edit_category_path(@category), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to categories", categories_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this category", @category, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+  <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Products in this Category
+      </h3>
+    </div>
+    <div class="bg-white overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Selling Price</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @category.products.each do |product| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= link_to product.name, product, class: "text-red-600 hover:text-red-800" %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= product.size %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm <%= stock_status_class(product.quantity, product.low_stock_threshold) %>">
+                <%= product.quantity %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_to_currency(product.selling_price) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

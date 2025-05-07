@@ -1,9 +1,11 @@
 class ProductsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_product, only: %i[ show edit update destroy ]
+  before_action :authorize_admin, except: %i[ index show ]
 
   # GET /products or /products.json
   def index
-    @products = Product.all
+    @products = Product.includes(:category).all
   end
 
   # GET /products/1 or /products/1.json
@@ -25,7 +27,7 @@ class ProductsController < ApplicationController
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: "Product was successfully created." }
+        format.html { redirect_to product_url(@product), notice: "Product was successfully created." }
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +40,7 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: "Product was successfully updated." }
+        format.html { redirect_to product_url(@product), notice: "Product was successfully updated." }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -49,22 +51,24 @@ class ProductsController < ApplicationController
 
   # DELETE /products/1 or /products/1.json
   def destroy
-    @product.destroy!
+    @product.destroy
 
     respond_to do |format|
-      format.html { redirect_to products_path, status: :see_other, notice: "Product was successfully destroyed." }
+      format.html { redirect_to products_url, notice: "Product was successfully destroyed." }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_product
-      @product = Product.find(params.expect(:id))
+      @product = Product.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def product_params
-      params.expect(product: [ :name, :size, :quantity, :purchase_price, :selling_price, :profit, :category_id, :low_stock_threshold ])
+      params.require(:product).permit(:name, :size, :quantity, :purchase_price, :selling_price, :category_id, :low_stock_threshold)
+    end
+
+    def authorize_admin
+      redirect_to products_path, alert: "Only admins can perform this action." unless current_user.admin?
     end
 end

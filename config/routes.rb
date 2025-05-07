@@ -1,12 +1,31 @@
 Rails.application.routes.draw do
-  get "home/index"
-  namespace :admin do
-    get "users/index"
-  end
-  resources :daily_sales
-  resources :products
-  resources :categories
+  # get "home/index"
+  # namespace :admin do
+  #   get "users/index"
+  # end
+  # resources :daily_sales
+  # resources :products
+  # resources :categories
+  # devise_for :users
+
   devise_for :users
+  root 'home#index'
+
+  resources :categories
+  resources :products
+  resources :daily_sales
+
+  namespace :admin do
+    resources :users, only: [:index] do
+      member do
+        patch :update_role
+      end
+    end
+  end
+
+  get 'admin/dashboard', to: 'dashboards#admin', as: 'admin_dashboard'
+  get 'seller/dashboard', to: 'dashboards#seller', as: 'seller_dashboard'
+  post 'admin/users/invite', to: 'admin/users#invite', as: 'invite_admin_users'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

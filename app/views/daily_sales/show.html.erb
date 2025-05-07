@@ -1,15 +1,53 @@
-<% content_for :title, "Showing daily sale" %>
-
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Showing daily sale</h1>
-
-  <%= render @daily_sale %>
-
-  <%= link_to "Edit this daily sale", edit_daily_sale_path(@daily_sale), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to daily sales", daily_sales_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this daily sale", @daily_sale, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Sale Details
+        </h3>
+        <div>
+          <%= link_to "Edit", edit_daily_sale_path(@daily_sale), class: "text-red-600 hover:text-red-800 mr-4" %>
+          <%= link_to "Back", daily_sales_path, class: "text-gray-600 hover:text-gray-800" %>
+        </div>
+      </div>
+    </div>
+    <div class="px-4 py-5 sm:p-6">
+      <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-8">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Date</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= format_date(@daily_sale.date) %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Product</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @daily_sale.product.name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Category</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @daily_sale.product.category.name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Quantity Sold</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @daily_sale.quantity_sold %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Remaining Quantity</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @daily_sale.remaining_quantity %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Unit Price</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= number_to_currency(@daily_sale.product.selling_price) %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Total Profit</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= number_to_currency(@daily_sale.total_profit) %></dd>
+        </div>
+        <% if current_user.admin? %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Recorded By</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @daily_sale.user.email %></dd>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>

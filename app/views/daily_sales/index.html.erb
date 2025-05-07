@@ -1,29 +1,74 @@
-<% content_for :title, "Daily sales" %>
-
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Daily sales</h1>
-    <%= link_to "New daily sale", new_daily_sale_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Daily Sales</h1>
+      <p class="mt-2 text-sm text-gray-700">A list of all recorded sales transactions.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to "Record Sale", new_daily_sale_path, class: "inline-flex items-center justify-center rounded-md border border-transparent bg-red-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto" %>
+    </div>
   </div>
 
-  <div id="daily_sales" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @daily_sales.any? %>
-      <% @daily_sales.each do |daily_sale| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render daily_sale %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", daily_sale, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_daily_sale_path(daily_sale), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", daily_sale, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-          </div>
+  <!-- Date Filter Form -->
+  <div class="mb-4 text-sm text-gray-600">
+    Showing data for: <span class="font-medium"><%= date_range_display(@start_date, @end_date) %></span>
+  </div>
+  <div class="mt-6 bg-white shadow sm:rounded-lg p-4 mb-6">
+    <%= form_with url: daily_sales_path, method: :get, local: true do |f| %>
+      <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+        <div>
+          <%= f.label :start_date, "From", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.date_field :start_date, value: params[:start_date] || 7.days.ago.to_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm" %>
         </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No daily sales found.</p>
+        <div>
+          <%= f.label :end_date, "To", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.date_field :end_date, value: params[:end_date] || Date.today, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm" %>
+        </div>
+        <div class="flex items-end">
+          <%= f.submit "Filter", class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-800 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+          <%= link_to "Reset", daily_sales_path, class: "ml-3 inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+        </div>
+      </div>
     <% end %>
+  </div>
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Date</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Product</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Category</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Qty Sold</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Remaining</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Unit Price</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Total Profit</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <% @daily_sales.each do |daily_sale| %>
+                <tr>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6"><%= daily_sale.date.strftime('%b %d, %Y') %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900"><%= daily_sale.product.name %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= daily_sale.product.category.name %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= daily_sale.quantity_sold %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= daily_sale.remaining_quantity %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= number_to_currency(daily_sale.product.selling_price) %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= number_to_currency(daily_sale.total_profit) %></td>
+                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                    <%= link_to "View", daily_sale, class: "text-red-600 hover:text-red-900" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -6,6 +6,8 @@ class CreateDailySales < ActiveRecord::Migration[8.0]
       t.integer :quantity_sold
       t.integer :remaining_quantity
       t.decimal :total_profit
+      t.references :user, null: false, foreign_key: true
+
 
       t.timestamps
     end
