@@ -27,7 +27,7 @@
               <div class="ml-5 w-0 flex-1">
                 <dt class="text-sm font-medium text-gray-500 truncate">Total Profit</dt>
                 <dd class="flex items-baseline">
-                  <div class="text-2xl font-semibold text-gray-900"><%= number_to_currency(@total_profit) %></div>
+                  <div class="text-2xl font-semibold text-gray-900"><%= number_to_currency(@total_profit, format: "%n %u", :unit => "/=") %></div>
                 </dd>
               </div>
             </div>
@@ -116,7 +116,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= sale.date.strftime('%b %d, %Y') %></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= sale.product.name %></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= sale.quantity_sold %></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_to_currency(sale.total_profit) %></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_to_currency(sale.total_profit, format: "%n %u", :unit => "/=") %></td>
                   </tr>
                 <% end %>
               </tbody>

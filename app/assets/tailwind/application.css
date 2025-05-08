@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+/* Hamburger menu animation */
+.mobile-menu-button.open span:first-child {
+  transform: translateY(0.375rem) rotate(45deg);
+}
+
+.mobile-menu-button.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-button.open span:last-child {
+  transform: translateY(-0.375rem) rotate(-45deg);
+}
+
+/* Mobile menu transition */
+.mobile-menu {
+  transition: all 0.3s ease-in-out;
+}
