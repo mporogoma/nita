@@ -92,7 +92,7 @@ builder:
 #   user: app
 
 # Use accessory services (secrets come from .kamal/secrets).
-#  accessories:
+accessories:
   db:
     image: postgres:17.0
     host: 158.220.106.135
