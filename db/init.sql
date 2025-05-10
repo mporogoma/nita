@@ -1,0 +1,3 @@
+CREATE USER nita WITH PASSWORD '';
+CREATE DATABASE nita_production OWNER nita;
+GRANT ALL PRIVILEGES ON DATABASE nita_production TO nita;
