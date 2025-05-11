@@ -89,4 +89,7 @@ Rails.application.configure do
    config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
    config.ssl_options = { redirect: { exclude: ->(request) { request.path == “/up” } }}
 
+  # Set timeout values appropriately
+   config.timeout_seconds = 150
+
 end
