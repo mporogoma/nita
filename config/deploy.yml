@@ -21,6 +21,7 @@ proxy:
   ssl: true
   host: 158.220.106.135
   app_port: 3000
+  deploy_timeout: 300
 
 # Credentials for your image host.
 registry:
