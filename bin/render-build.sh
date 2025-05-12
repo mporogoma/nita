@@ -7,4 +7,4 @@ bundle exec rails assets:clean
 # rails db:drop 
 # rails db:create 
 # bundle exec rails db:migrate
-rails db:seed
+# rails db:seed
