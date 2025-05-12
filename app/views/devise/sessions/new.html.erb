@@ -5,6 +5,7 @@
         Sign in to your account
       </h2>
     </div>
+        <%= render "devise/shared/error_messages", resource: resource %>
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-8 space-y-6" }) do |f| %>
       <div class="rounded-md shadow-sm space-y-4">
         <div>
