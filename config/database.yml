@@ -81,6 +81,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
     database: nita_production
     username: nita
     password: <%= ENV["NITA_DATABASE_PASSWORD"] %>
